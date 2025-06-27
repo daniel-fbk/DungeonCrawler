@@ -1,0 +1,87 @@
+@font-face {
+  font-family: "CinzelDecorative-Regular";
+  src: url(./assets/fonts/CinzelDecorative-Regular.ttf);
+}
+
+@font-face {
+  font-family: "AlmendraSC-Regular";
+  src: url(./assets/fonts/AlmendraSC-Regular.ttf);
+}
+
+@font-face {
+  font-family: "futura book font";
+  src: url(./assets/fonts/futura\ book\ font.ttf);
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  list-style: none;
+  text-decoration: none;
+}
+
+* {
+  /* outline: solid 1px red; */
+}
+
+body {
+  background-color: #0a0a0a;
+  height: 100vh;
+  font-family: "futura book font";
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: normal;
+}
+
+h1,
+p {
+  color: white;
+}
+
+input {
+  background: transparent;
+  border: solid 1px;
+  color: white;
+  padding: 0.4rem;
+  margin: 1rem 0;
+}
+
+main {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-container {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  max-width: 60rem;
+  height: 90%;
+}
+
+#character-creation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 5%;
+}
+
+#character-creation-image {
+  width: 65%;
+}
+
+#character-creation input {
+  font-family: Arial;
+  width: 15rem;
+  max-width: calc(100% - 2rem);
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+}
