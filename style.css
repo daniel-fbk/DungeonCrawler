@@ -37,6 +37,7 @@ h1 {
 }
 
 h1,
+h3,
 p {
   color: white;
 }
@@ -47,6 +48,19 @@ input {
   color: white;
   padding: 0.4rem;
   margin: 1rem 0;
+}
+
+button {
+  background: transparent;
+  border: solid 1px;
+  color: white;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: white;
+  color: black;
 }
 
 main {
@@ -84,4 +98,28 @@ main {
   display: flex;
   flex-direction: column;
   justify-self: center;
+}
+
+header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+#dungeon {
+  display: none;
+  flex-direction: column;
+  text-align: center;
+  gap: 5%;
+}
+
+.rooms > img {
+  margin-bottom: 2rem;
+}
+
+.controls {
+  color: white;
+}
+
+#room-prompt {
+  padding-bottom: 3rem;
 }
