@@ -33,6 +33,23 @@ let health = 50;
 
 function switchHub() {
   document.getElementById("character-creation").style.display = "none";
-
   document.getElementById("dungeon").style.display = "flex";
+  document.getElementById("forward").style.display = "inline-block";
+  let userName = document.getElementById("name-input").value;
+  console.log(userName);
+}
+
+function nextRoom() {
+  if (room == 0) {
+    room++;
+    document.getElementById("left").style.display = "inline-block";
+    document.getElementById("right").style.display = "inline-block";
+    document.getElementById("room-image").src =
+      "./assets/images/dungeon-hallway.jpg";
+    document.getElementById("room-prompt").textContent =
+      "You step into a damp stone chamber. The air is thick, and the walls echo with distant dripping water. There are three narrow passageways: one to the left, one straight ahead, and one to the right. Which way do you go?";
+    document.getElementById("room").textContent = "Room 1";
+  } else if (room == 1) {
+    room++;
+  }
 }

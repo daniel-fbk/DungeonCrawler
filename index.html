@@ -30,62 +30,60 @@
           <h1 id="health">Health: 50</h1>
         </header>
         <div class="rooms">
-          <img
-            id="room-image"
-            src="./assets/images/dungeon-entrance.avif"
-            alt=""
-          />
+          <img id="room-image" src="./assets/images/entrance6.jpeg" alt="" />
           <h3 id="room-prompt">
             You approach the dungeon entrance. Ready to go in?
           </h3>
-          <button class="controls" id="left">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <line x1="19" y1="12" x2="5" y2="12" />
-              <polyline points="11 6 5 12 11 18" />
-            </svg>
-          </button>
-          <button class="controls" id="up">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <line x1="12" y1="19" x2="12" y2="5" />
-              <polyline points="6 11 12 5 18 11" />
-            </svg>
-          </button>
-          <button class="controls" id="right">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="13 6 19 12 13 18" />
-            </svg>
-          </button>
+          <div class="controls">
+            <button onclick="nextRoom()" class="controls" id="left">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="19" y1="12" x2="5" y2="12" />
+                <polyline points="11 6 5 12 11 18" />
+              </svg>
+            </button>
+            <button onclick="nextRoom()" class="controls" id="forward">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="12" y1="19" x2="12" y2="5" />
+                <polyline points="6 11 12 5 18 11" />
+              </svg>
+            </button>
+            <button onclick="nextRoom()" class="controls" id="right">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="13 6 19 12 13 18" />
+              </svg>
+            </button>
+          </div>
         </div>
       </section>
     </main>

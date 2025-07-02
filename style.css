@@ -50,6 +50,7 @@ input {
   margin: 1rem 0;
 }
 
+/* Buttons */
 button {
   background: transparent;
   border: solid 1px;
@@ -71,6 +72,7 @@ main {
   align-items: center;
 }
 
+/* Game */
 .game-container {
   display: inline-block;
   position: relative;
@@ -79,6 +81,7 @@ main {
   height: 90%;
 }
 
+/* Character Creation */
 #character-creation {
   display: flex;
   flex-direction: column;
@@ -100,11 +103,14 @@ main {
   justify-self: center;
 }
 
+/* Header */
 header {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  align-items: end;
 }
 
+/* Dungeon */
 #dungeon {
   display: none;
   flex-direction: column;
@@ -114,12 +120,47 @@ header {
 
 .rooms > img {
   margin-bottom: 2rem;
+  height: 400px;
+  width: 80%;
+  object-fit: cover;
 }
 
 .controls {
-  color: white;
+  color: #f2f2f2;
 }
 
 #room-prompt {
   padding-bottom: 3rem;
+}
+
+#health {
+  text-align: end;
+  font-size: 1.35rem;
+}
+
+.controls {
+  max-width: 13.5rem;
+  padding: 0.4rem 0.6rem;
+  display: grid;
+  justify-self: center;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-areas:
+    "forward forward forward"
+    "left x right";
+}
+
+#forward {
+  display: none;
+  grid-area: forward;
+  grid-column: 2/3;
+}
+
+#left {
+  display: none;
+  grid-area: left;
+}
+
+#right {
+  display: none;
+  grid-area: right;
 }
