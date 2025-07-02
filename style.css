@@ -164,3 +164,11 @@ header {
   display: none;
   grid-area: right;
 }
+
+.events {
+  display: inline-block;
+}
+
+#text-options {
+  display: inline-block;
+}
