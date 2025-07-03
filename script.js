@@ -12,21 +12,11 @@ Events:
 Nothing
 Treasure Chest - Skip a Room Potion - Higher flee chance - Nothing - Mimic(Take damage)
 Fountain, heals an amount of "Health"
-Skeleton, option to attempt to flee or fight, lose "Health", chance to avoid losing "Health" if flee is effective
+Enemy, option to attempt to flee or fight, lose "Health", chance to avoid losing "Health" if flee is effective
 
 Find "Exit" to win
 
 */
-
-let room = 0;
-let health = 50;
-let fleeChance = 45;
-let eventRoll = 0;
-
-const healthDisplay = document.getElementById("health");
-const roomCount = document.querySelector("#room");
-const changeImage = document.querySelector("#room-image");
-const roomPrompt = document.querySelector("#room-prompt");
 
 // const controls = document.querySelector("controls");
 
@@ -38,13 +28,25 @@ const roomPrompt = document.querySelector("#room-prompt");
 //   document.querySelector(".controls").style.display = "none";
 // }
 
+let room = 0;
+let health = 50;
+let fleeChance = 45;
+let eventRoll = 0;
+
+const healthDisplay = document.getElementById("health");
+const roomCount = document.querySelector("#room");
+const changeImage = document.querySelector("#room-image");
+const roomPrompt = document.querySelector("#room-prompt");
+
+// ============ Title Screen ============
 function switchHub() {
   document.getElementById("character-creation").style.display = "none";
   document.getElementById("dungeon").style.display = "flex";
   document.getElementById("forward").style.display = "block";
-  let userName = document.getElementById("name-input").value;
+  const userName = document.getElementById("name-input").value;
 }
 
+// ============ Next Room ============
 function nextRoom() {
   if (room == 0) {
     incrementRoom();
@@ -53,12 +55,37 @@ function nextRoom() {
     changeImage.src = "./assets/images/dungeon-hallway.jpg";
     roomPrompt.textContent =
       "You step into a damp stone chamber. The air is thick, and the walls echo with distant dripping water. There are three narrow passageways: one to the left, one straight ahead, and one to the right. Which way do you go?";
-  } else if (room == 1) {
+  } else if (room > 0 && room < 10) {
     incrementRoom();
-    treasureChest();
+    dungeonEvent();
+  } else {
+    finishRun();
   }
 }
 
+// ============ Event Decider ============
+function dungeonEvent() {
+  let eventTypes = [
+    "treasure",
+    "fountain",
+    "enemy",
+    "enemy",
+    "nothing",
+    "nothing",
+    "nothing",
+    "nothing",
+    "nothing",
+  ];
+
+  const event = eventTypes[randomizeNum(eventTypes.length)];
+  console.log(event);
+  switch (event) {
+    case "treasure":
+      treasureChest();
+  }
+}
+
+// ============ Events ============
 function treasureChest() {
   changeImage.src = "./assets/images/chest.jpg";
   roomPrompt.textContent = "You find a chest. It looks old, but untouched.";
@@ -66,6 +93,7 @@ function treasureChest() {
   document.getElementById("chest-options").style.display = "block";
 }
 
+// ============ Choice Events ============
 function openChest() {
   eventRoll = randomizeNum(7);
   console.log(eventRoll);
@@ -82,13 +110,14 @@ function openChest() {
   } else if (eventRoll == 6) {
     changeHealth("-", 10);
     roomPrompt.textContent = "A mimic!";
-    document.getElementById("room-image").src = "./assets/images/mimic.jpg";
+    changeImage.src = "./assets/images/mimic.jpg";
     console.log(`Current Health: ${health}`);
   }
 }
 
-function randomizeNum(num1) {
-  return Math.floor(Math.random() * num1);
+// ============ Functions ============
+function randomizeNum(num) {
+  return Math.floor(Math.random() * num);
 }
 
 function changeHealth(operator, healthValue) {
