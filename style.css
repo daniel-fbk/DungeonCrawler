@@ -173,6 +173,31 @@ header {
   display: inline-block;
 }
 
-#chest-options {
+#decision-panel {
   display: none;
+}
+
+.items {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.item {
+  max-width: 4.5rem;
+  max-height: 4.5rem;
+}
+
+#potion {
+  max-width: 80%;
+}
+
+#boots {
+  display: none;
+  max-width: 80%;
+}
+
+#potion:hover {
+  cursor: pointer;
+  filter: brightness(0.8);
 }
