@@ -37,7 +37,7 @@ let bootsUpgrades = 0;
 
 const healthDisplay = document.getElementById("health");
 const roomCount = document.querySelector("#room");
-const changeImage = document.querySelector("#room-image");
+const roomImage = document.querySelector("#room-image");
 const roomPrompt = document.querySelector("#room-prompt");
 const decisionPanel = document.getElementById("decision-panel");
 const controls = document.querySelector(".controls");
@@ -58,9 +58,10 @@ function nextRoom() {
     incrementRoom();
     document.getElementById("left").style.display = "block";
     document.getElementById("right").style.display = "block";
-    changeImage.src = "./assets/images/dungeon-hallway.jpg";
-    roomPrompt.textContent =
-      "You step into a damp stone chamber. The air is thick, and the walls echo with distant dripping water. There are three narrow passageways: one to the left, one straight ahead, and one to the right. Which way do you go?";
+    updateImage("./assets/images/dungeon-hallway.jpg");
+    updatePrompt(
+      "You step into a damp stone chamber. The air is thick, and the walls echo with distant dripping water. There are three narrow passageways: one to the left, one straight ahead, and one to the right. Which way do you go?"
+    );
   } else if (room > 0 && room < 55) {
     incrementRoom();
     dungeonEvent();
@@ -71,10 +72,9 @@ function nextRoom() {
 
 // ============ Event Decider ============
 function dungeonEvent() {
-  let choices;
   let eventTypes = [
-    "treasure",
-    "fountain",
+    // "treasure",
+    // "fountain",
     "enemy",
     "enemy",
     "nothing",
@@ -88,28 +88,35 @@ function dungeonEvent() {
   switch (event) {
     case "treasure":
       treasureChest();
+      break;
     case "fountain":
       fountain();
+      break;
+    case "enemy":
+      enemy();
+      break;
   }
 }
 
 // ============ Events ============
 function treasureChest() {
-  changeImage.src = "./assets/images/chest.jpg";
-  roomPrompt.textContent = "You find a chest. It looks old, but untouched.";
-  controls.style.display = "none";
-  decisionPanel.style.display = "block";
-  decisionPanel.innerHTML = `<button onclick="openChest()" id="choice1">Open the chest</button>
-              <button onclick="ignoreEvent()" id="choice2">Ignore</button>`;
+  updateImage("./assets/images/chest.jpg");
+  updatePrompt("You find a chest. It looks old, but untouched.");
+  updateChoices(`<button onclick="openChest()" id="choice1">Open the chest</button>
+              <button onclick="ignoreEvent()" id="choice2">Ignore</button>`);
 }
 
 function fountain() {
-  changeImage.src = "./assets/images/fountain.jpg";
-  roomPrompt.textContent = "You find a fountain.";
-  controls.style.display = "none";
-  decisionPanel.style.display = "block";
-  decisionPanel.innerHTML = `<button onclick="fountainDrink()" id="choice1">Drink from it</button>
-              <button onclick="ignoreEvent()" id="choice2">Ignore</button>`;
+  updateImage("./assets/images/fountain.jpg");
+  updatePrompt("You find a fountain.");
+  updateChoices(`<button onclick="fountainDrink()" id="choice1">Drink from it</button>
+              <button onclick="ignoreEvent()" id="choice2">Ignore</button>`);
+}
+
+function enemy() {
+  generateEnemy();
+  updateChoices(`<button onclick="engageEnemy()" id="choice1">Engage enemy</button>
+              <button onclick="fleeEnemy()" id="choice2">Attempt to flee</button>`);
 }
 
 // ============ Choice Events ============
@@ -117,7 +124,7 @@ function openChest() {
   eventRoll = randomizeNum(7);
   console.log(eventRoll);
   if (eventRoll <= 3) {
-    roomPrompt.textContent = "The chest was empty.";
+    updatePrompt("The chest was empty.");
   } else if (eventRoll == 4) {
     bootsUpgrade();
     fleeChance += 10;
@@ -125,9 +132,8 @@ function openChest() {
     addSkipRoomPotion();
   } else if (eventRoll == 6) {
     changeHealth("-", 10);
-    roomPrompt.textContent = "A mimic!";
-    changeImage.src = "./assets/images/mimic.jpg";
-    console.log(`Current Health: ${health}`);
+    updatePrompt("A mimic!");
+    updateImage("./assets/images/mimic.jpg");
   }
 }
 
@@ -135,16 +141,14 @@ function fountainDrink() {
   eventRoll = randomizeNum(5);
   if (eventRoll > 1) {
     changeHealth("+", 10);
-    roomPrompt.textContent = "You feel refereshed. Restored 10 health";
-    controls.style.display = "grid";
-    decisionPanel.style.display = "none";
-    changeImage.src = "./assets/images/dungeon-hallway.jpg";
+    updatePrompt("You feel refereshed. Restored 10 health");
+    toControls();
+    updateImage("./assets/images/dungeon-hallway.jpg");
   } else {
     changeHealth("-", 5);
-    roomPrompt.textContent = "The fountain was poisoned. You lose 5 health.";
-    controls.style.display = "grid";
-    decisionPanel.style.display = "none";
-    changeImage.src = "./assets/images/dungeon-hallway.jpg";
+    updatePrompt("The fountain was poisoned. You lose 5 health.");
+    toControls();
+    updateImage("./assets/images/dungeon-hallway.jpg");
   }
 }
 
@@ -170,16 +174,17 @@ const bootsUpgrade = () => {
   if (bootsUpgrades === 0) {
     bootsUpgrades++;
     bootsImage.style.display = "block";
-    roomPrompt.textContent =
-      "You find an old pair of leather boots. This might be useful when fleeing.";
+    updatePrompt(
+      "You find an old pair of leather boots. This might be useful when fleeing."
+    );
   } else if (bootsUpgrades === 1) {
     bootsUpgrades++;
-    bootsImage.src = "./assets/images/ranger-boots.webp";
-    roomPrompt.textContent = "You find a pair of ranger boots.";
+    updateImage("./assets/images/ranger-boots.webp");
+    updatePrompt("You find a pair of ranger boots.");
   } else if (bootsUpgrades === 2) {
     bootsUpgrades++;
-    bootsImage.src = "./assets/images/pegasian-boots.webp";
-    roomPrompt.textContent = "You find a brand new pair of pegasian boots.";
+    updateImage("./assets/images/pegasian-boots.webp");
+    updatePrompt("You find a brand new pair of pegasian boots.");
   } else {
     nothing();
   }
@@ -188,7 +193,7 @@ const bootsUpgrade = () => {
 // Increase Potion
 const addSkipRoomPotion = () => {
   skipRoomPotion++;
-  roomPrompt.textContent = "You found a Skip Potion! Use this to skip a room.";
+  updatePrompt("You found a Skip Potion! Use this to skip a room.");
   potionAmount.textContent = `${skipRoomPotion}`;
 };
 
@@ -197,11 +202,32 @@ const useSkipRoomPotion = () => {
     skipRoomPotion--;
     potionAmount.textContent = `${skipRoomPotion}`;
     incrementRoom();
-    decisionPanel.style.display = "none";
-    controls.style.display = "grid";
-    roomPrompt.textContent =
-      "You drink the glowing potion. A strange warmth spreads through your body, and in an instant, the room blurs and fades. When your vision clears, you've skipped ahead one room deeper into the dungeon.";
-    changeImage.src = "./assets/images/dungeon-hallway.jpg";
+    toControls();
+    updatePrompt(
+      "You drink the glowing potion. A strange warmth spreads through your body, and in an instant, the room blurs and fades. When your vision clears, you've skipped ahead one room deeper into the dungeon."
+    );
+    updateImage("./assets/images/dungeon-hallway.jpg");
+  }
+};
+
+// Generate random enemy
+const generateEnemy = () => {
+  eventRoll = randomizeNum(5);
+  if (eventRoll === 1) {
+    updateImage("./assets/images/enemy1.png");
+    updatePrompt("An enemy has appeared.");
+  } else if (eventRoll === 2) {
+    updateImage("./assets/images/enemy2.png");
+    updatePrompt("An enemy has appeared.");
+  } else if (eventRoll === 3) {
+    updateImage("./assets/images/enemy3.png");
+    updatePrompt("An enemy has appeared.");
+  } else if (eventRoll === 4) {
+    updateImage("./assets/images/enemy4.png");
+    updatePrompt("An enemy has appeared.");
+  } else if (eventRoll === 5) {
+    updateImage("./assets/images/enemy5.png");
+    updatePrompt("An enemy has appeared.");
   }
 };
 
@@ -213,8 +239,30 @@ const incrementRoom = () => {
 
 // Ignore event
 const ignoreEvent = () => {
-  decisionPanel.style.display = "none";
+  toControls();
+  updatePrompt("You ignored it and decided to move on.");
+  updateImage("./assets/images/dungeon-hallway.jpg");
+};
+
+// Update room message
+updatePrompt = (message) => {
+  roomPrompt.textContent = message;
+};
+
+// Update room image
+updateImage = (image) => {
+  roomImage.src = image;
+};
+
+// Update choices
+updateChoices = (choices) => {
+  decisionPanel.innerHTML = choices;
+  controls.style.display = "none";
+  decisionPanel.style.display = "block";
+};
+
+// Swap from choice panel to controls
+toControls = () => {
   controls.style.display = "grid";
-  roomPrompt.textContent = "You ignored it and decided to move on.";
-  changeImage.src = "./assets/images/dungeon-hallway.jpg";
+  decisionPanel.style.display = "none";
 };
