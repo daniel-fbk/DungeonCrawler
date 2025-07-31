@@ -28,6 +28,7 @@ Find "Exit" to win
 //   document.querySelector(".controls").style.display = "none";
 // }
 
+let userName = "";
 let room = 0;
 let health = 50;
 let fleeChance = 45;
@@ -46,10 +47,10 @@ const bootsImage = document.querySelector("#boots");
 
 // ============ Title Screen ============
 function switchHub() {
+  userName = document.getElementById("name-input").value;
   document.getElementById("character-creation").style.display = "none";
   document.getElementById("dungeon").style.display = "flex";
   document.getElementById("forward").style.display = "block";
-  const userName = document.getElementById("name-input").value;
 }
 
 // ============ Next Room ============
@@ -62,7 +63,7 @@ function nextRoom() {
     updatePrompt(
       "You step into a damp stone chamber. The air is thick, and the walls echo with distant dripping water. There are three narrow passageways: one to the left, one straight ahead, and one to the right. Which way do you go?"
     );
-  } else if (room > 0 && room < 55) {
+  } else if (room > 0 && room < 15) {
     incrementRoom();
     dungeonEvent();
   } else {
@@ -73,13 +74,10 @@ function nextRoom() {
 // ============ Event Decider ============
 function dungeonEvent() {
   let eventTypes = [
-    // "treasure",
-    // "fountain",
+    "treasure",
+    "fountain",
     "enemy",
     "enemy",
-    "nothing",
-    "nothing",
-    "nothing",
     "nothing",
     "nothing",
   ];
@@ -96,6 +94,11 @@ function dungeonEvent() {
       enemy();
       break;
   }
+}
+
+function finishRun() {
+  updateImage("./assets/images/exit.jpeg");
+  updatePrompt(`Congratulations, ${userName}. You found the exit!`);
 }
 
 // ============ Events ============
@@ -125,20 +128,24 @@ function openChest() {
   console.log(eventRoll);
   if (eventRoll <= 3) {
     updatePrompt("The chest was empty.");
+    toControls();
   } else if (eventRoll == 4) {
     bootsUpgrade();
     fleeChance += 10;
+    toControls();
   } else if (eventRoll == 5) {
     addSkipRoomPotion();
+    toControls();
   } else if (eventRoll == 6) {
     changeHealth("-", 10);
     updatePrompt("A mimic!");
     updateImage("./assets/images/mimic.jpg");
+    toControls();
   }
 }
 
 function fountainDrink() {
-  eventRoll = randomizeNum(5);
+  eventRoll = randomizeNum(6);
   if (eventRoll > 1) {
     changeHealth("+", 10);
     updatePrompt("You feel refereshed. Restored 10 health");
@@ -152,11 +159,45 @@ function fountainDrink() {
   }
 }
 
+function engageEnemy() {
+  eventRoll = randomizeNum(2);
+  if (eventRoll === 1) {
+    changeHealth("-", 20);
+    updatePrompt(
+      "You win the battle. Pain remains. The price of survival is clear. -20 Health"
+    );
+    updateImage("./assets/images/dungeon-hallway.jpg");
+    toControls();
+  } else {
+    updatePrompt("The enemy falls before you. You remain unharmed.");
+    updateImage("./assets/images/dungeon-hallway.jpg");
+    toControls();
+  }
+}
+
+function fleeEnemy() {
+  eventRoll = randomizeNum(101);
+  if (eventRoll <= fleeChance) {
+    updatePrompt("You slip away unnoticed.");
+  } else {
+    updatePrompt(
+      "You try to flee, but fail. You fall back one room instead. -5 Health"
+    );
+    changeHealth("-", 5);
+    decrementRoom();
+  }
+  updateImage("./assets/images/dungeon-hallway.jpg");
+  toControls();
+}
+
 // ============ Functions ============
+
+// Generate a random number
 function randomizeNum(num) {
   return Math.floor(Math.random() * num);
 }
 
+// Change health
 function changeHealth(operator, healthValue) {
   switch (operator) {
     case "+":
@@ -179,11 +220,11 @@ const bootsUpgrade = () => {
     );
   } else if (bootsUpgrades === 1) {
     bootsUpgrades++;
-    updateImage("./assets/images/ranger-boots.webp");
+    bootsImage.src = "./assets/images/ranger-boots.webp";
     updatePrompt("You find a pair of ranger boots.");
   } else if (bootsUpgrades === 2) {
     bootsUpgrades++;
-    updateImage("./assets/images/pegasian-boots.webp");
+    bootsImage.src = "./assets/images/pegasian-boots.webp";
     updatePrompt("You find a brand new pair of pegasian boots.");
   } else {
     nothing();
@@ -197,6 +238,7 @@ const addSkipRoomPotion = () => {
   potionAmount.textContent = `${skipRoomPotion}`;
 };
 
+// Use potion
 const useSkipRoomPotion = () => {
   if (skipRoomPotion > 0) {
     skipRoomPotion--;
@@ -213,19 +255,20 @@ const useSkipRoomPotion = () => {
 // Generate random enemy
 const generateEnemy = () => {
   eventRoll = randomizeNum(5);
-  if (eventRoll === 1) {
+  console.log(eventRoll);
+  if (eventRoll === 0) {
     updateImage("./assets/images/enemy1.png");
     updatePrompt("An enemy has appeared.");
-  } else if (eventRoll === 2) {
+  } else if (eventRoll === 1) {
     updateImage("./assets/images/enemy2.png");
     updatePrompt("An enemy has appeared.");
-  } else if (eventRoll === 3) {
+  } else if (eventRoll === 2) {
     updateImage("./assets/images/enemy3.png");
     updatePrompt("An enemy has appeared.");
-  } else if (eventRoll === 4) {
+  } else if (eventRoll === 3) {
     updateImage("./assets/images/enemy4.png");
     updatePrompt("An enemy has appeared.");
-  } else if (eventRoll === 5) {
+  } else if (eventRoll === 4) {
     updateImage("./assets/images/enemy5.png");
     updatePrompt("An enemy has appeared.");
   }
@@ -234,6 +277,12 @@ const generateEnemy = () => {
 // Increase room
 const incrementRoom = () => {
   room++;
+  roomCount.textContent = `Room: ${room}`;
+};
+
+// Decrease room
+const decrementRoom = () => {
+  room--;
   roomCount.textContent = `Room: ${room}`;
 };
 
