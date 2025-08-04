@@ -45,160 +45,15 @@ const controls = document.querySelector(".controls");
 const potionAmount = document.querySelector("#potion-amount");
 const bootsImage = document.querySelector("#boots");
 
-// ============ Title Screen ============
-function switchHub() {
-  userName = document.getElementById("name-input").value;
-  document.getElementById("character-creation").style.display = "none";
-  document.getElementById("dungeon").style.display = "flex";
-  document.getElementById("forward").style.display = "block";
-}
-
-// ============ Next Room ============
-function nextRoom() {
-  if (room == 0) {
-    incrementRoom();
-    document.getElementById("left").style.display = "block";
-    document.getElementById("right").style.display = "block";
-    updateImage("./assets/images/dungeon-hallway.jpg");
-    updatePrompt(
-      "You step into a damp stone chamber. The air is thick, and the walls echo with distant dripping water. There are three narrow passageways: one to the left, one straight ahead, and one to the right. Which way do you go?"
-    );
-  } else if (room > 0 && room < 15) {
-    incrementRoom();
-    dungeonEvent();
-  } else {
-    finishRun();
-  }
-}
-
-// ============ Event Decider ============
-function dungeonEvent() {
-  let eventTypes = [
-    "treasure",
-    "fountain",
-    "enemy",
-    "enemy",
-    "nothing",
-    "nothing",
-  ];
-
-  const event = eventTypes[randomizeNum(eventTypes.length)];
-  switch (event) {
-    case "treasure":
-      treasureChest();
-      break;
-    case "fountain":
-      fountain();
-      break;
-    case "enemy":
-      enemy();
-      break;
-  }
-}
-
-function finishRun() {
-  updateImage("./assets/images/exit.jpeg");
-  updatePrompt(`Congratulations, ${userName}. You found the exit!`);
-}
-
-// ============ Events ============
-function treasureChest() {
-  updateImage("./assets/images/chest.jpg");
-  updatePrompt("You find a chest. It looks old, but untouched.");
-  updateChoices(`<button onclick="openChest()" id="choice1">Open the chest</button>
-              <button onclick="ignoreEvent()" id="choice2">Ignore</button>`);
-}
-
-function fountain() {
-  updateImage("./assets/images/fountain.jpg");
-  updatePrompt("You find a fountain.");
-  updateChoices(`<button onclick="fountainDrink()" id="choice1">Drink from it</button>
-              <button onclick="ignoreEvent()" id="choice2">Ignore</button>`);
-}
-
-function enemy() {
-  generateEnemy();
-  updateChoices(`<button onclick="engageEnemy()" id="choice1">Engage enemy</button>
-              <button onclick="fleeEnemy()" id="choice2">Attempt to flee</button>`);
-}
-
-// ============ Choice Events ============
-function openChest() {
-  eventRoll = randomizeNum(7);
-  console.log(eventRoll);
-  if (eventRoll <= 3) {
-    updatePrompt("The chest was empty.");
-    toControls();
-  } else if (eventRoll == 4) {
-    bootsUpgrade();
-    fleeChance += 10;
-    toControls();
-  } else if (eventRoll == 5) {
-    addSkipRoomPotion();
-    toControls();
-  } else if (eventRoll == 6) {
-    changeHealth("-", 10);
-    updatePrompt("A mimic!");
-    updateImage("./assets/images/mimic.jpg");
-    toControls();
-  }
-}
-
-function fountainDrink() {
-  eventRoll = randomizeNum(6);
-  if (eventRoll > 1) {
-    changeHealth("+", 10);
-    updatePrompt("You feel refereshed. Restored 10 health");
-    toControls();
-    updateImage("./assets/images/dungeon-hallway.jpg");
-  } else {
-    changeHealth("-", 5);
-    updatePrompt("The fountain was poisoned. You lose 5 health.");
-    toControls();
-    updateImage("./assets/images/dungeon-hallway.jpg");
-  }
-}
-
-function engageEnemy() {
-  eventRoll = randomizeNum(2);
-  if (eventRoll === 1) {
-    changeHealth("-", 20);
-    updatePrompt(
-      "You win the battle. Pain remains. The price of survival is clear. -20 Health"
-    );
-    updateImage("./assets/images/dungeon-hallway.jpg");
-    toControls();
-  } else {
-    updatePrompt("The enemy falls before you. You remain unharmed.");
-    updateImage("./assets/images/dungeon-hallway.jpg");
-    toControls();
-  }
-}
-
-function fleeEnemy() {
-  eventRoll = randomizeNum(101);
-  if (eventRoll <= fleeChance) {
-    updatePrompt("You slip away unnoticed.");
-  } else {
-    updatePrompt(
-      "You try to flee, but fail. You fall back one room instead. -5 Health"
-    );
-    changeHealth("-", 5);
-    decrementRoom();
-  }
-  updateImage("./assets/images/dungeon-hallway.jpg");
-  toControls();
-}
-
-// ============ Functions ============
+// ============ Utility ============
 
 // Generate a random number
-function randomizeNum(num) {
+const randomizeNum = (num) => {
   return Math.floor(Math.random() * num);
-}
+};
 
 // Change health
-function changeHealth(operator, healthValue) {
+const changeHealth = (operator, healthValue) => {
   switch (operator) {
     case "+":
       health += healthValue;
@@ -208,7 +63,54 @@ function changeHealth(operator, healthValue) {
 
       return (healthDisplay.textContent = `Health: ${health.toString()}`);
   }
-}
+};
+
+// Increase room
+const incrementRoom = () => {
+  room++;
+  roomCount.textContent = `Room: ${room}`;
+};
+
+// Decrease room
+const decrementRoom = () => {
+  room--;
+  roomCount.textContent = `Room: ${room}`;
+};
+
+// Update room message
+const updatePrompt = (message) => {
+  roomPrompt.textContent = message;
+};
+
+// Update room image
+const updateImage = (image) => {
+  roomImage.src = image;
+};
+
+// Update choices
+const updateChoices = (choices) => {
+  decisionPanel.innerHTML = choices;
+  controls.style.display = "none";
+  decisionPanel.style.display = "block";
+};
+
+// Swap from choice panel to controls
+const toControls = () => {
+  controls.style.display = "grid";
+  decisionPanel.style.display = "none";
+};
+
+// Ignore event
+const ignoreEvent = () => {
+  toControls();
+  updatePrompt("You ignored it and decided to move on.");
+  updateImage("./assets/images/dungeon-hallway.jpg");
+};
+
+const finishRun = () => {
+  updateImage("./assets/images/exit.jpeg");
+  updatePrompt(`Congratulations, ${userName}. You found the exit!`);
+};
 
 // Treasure chest contents
 const bootsUpgrade = () => {
@@ -274,44 +176,142 @@ const generateEnemy = () => {
   }
 };
 
-// Increase room
-const incrementRoom = () => {
-  room++;
-  roomCount.textContent = `Room: ${room}`;
+// ============ Title Screen ============
+const switchHub = () => {
+  userName = document.getElementById("name-input").value;
+  document.getElementById("character-creation").style.display = "none";
+  document.getElementById("dungeon").style.display = "flex";
+  document.getElementById("forward").style.display = "block";
 };
 
-// Decrease room
-const decrementRoom = () => {
-  room--;
-  roomCount.textContent = `Room: ${room}`;
+// ============ Choice Events ============
+const openChest = () => {
+  eventRoll = randomizeNum(5);
+  console.log(eventRoll);
+  if (eventRoll <= 1) {
+    updatePrompt("The chest was empty.");
+    toControls();
+  } else if (eventRoll == 2) {
+    bootsUpgrade();
+    fleeChance += 10;
+    toControls();
+  } else if (eventRoll == 3) {
+    addSkipRoomPotion();
+    toControls();
+  } else if (eventRoll == 4) {
+    changeHealth("-", 10);
+    updatePrompt("A mimic!");
+    updateImage("./assets/images/mimic.jpg");
+    toControls();
+  }
 };
 
-// Ignore event
-const ignoreEvent = () => {
-  toControls();
-  updatePrompt("You ignored it and decided to move on.");
+const fountainDrink = () => {
+  eventRoll = randomizeNum(5);
+  if (eventRoll > 1) {
+    changeHealth("+", 10);
+    updatePrompt("You feel refereshed. Restored 10 health");
+    toControls();
+    updateImage("./assets/images/dungeon-hallway.jpg");
+  } else {
+    changeHealth("-", 5);
+    updatePrompt("The fountain was poisoned. You lose 5 health.");
+    toControls();
+    updateImage("./assets/images/dungeon-hallway.jpg");
+  }
+};
+
+const engageEnemy = () => {
+  eventRoll = randomizeNum(2);
+  if (eventRoll === 1) {
+    changeHealth("-", 20);
+    updatePrompt(
+      "You win the battle. Pain remains. The price of survival is clear. -20 Health"
+    );
+    updateImage("./assets/images/dungeon-hallway.jpg");
+    toControls();
+  } else {
+    updatePrompt("The enemy falls before you. You remain unharmed.");
+    updateImage("./assets/images/dungeon-hallway.jpg");
+    toControls();
+  }
+};
+
+const fleeEnemy = () => {
+  eventRoll = randomizeNum(101);
+  if (eventRoll <= fleeChance) {
+    updatePrompt("You slip away unnoticed.");
+  } else {
+    updatePrompt(
+      "You try to flee, but fail. You fall back one room instead. -5 Health"
+    );
+    changeHealth("-", 5);
+    decrementRoom();
+  }
   updateImage("./assets/images/dungeon-hallway.jpg");
+  toControls();
 };
 
-// Update room message
-updatePrompt = (message) => {
-  roomPrompt.textContent = message;
+// ============ Events ============
+const treasureChest = () => {
+  updateImage("./assets/images/chest.jpg");
+  updatePrompt("You find a chest. It looks old, but untouched.");
+  updateChoices(`<button onclick="openChest()" id="choice1">Open the chest</button>
+              <button onclick="ignoreEvent()" id="choice2">Ignore</button>`);
 };
 
-// Update room image
-updateImage = (image) => {
-  roomImage.src = image;
+const fountain = () => {
+  updateImage("./assets/images/fountain.jpg");
+  updatePrompt("You find a fountain.");
+  updateChoices(`<button onclick="fountainDrink()" id="choice1">Drink from it</button>
+              <button onclick="ignoreEvent()" id="choice2">Ignore</button>`);
 };
 
-// Update choices
-updateChoices = (choices) => {
-  decisionPanel.innerHTML = choices;
-  controls.style.display = "none";
-  decisionPanel.style.display = "block";
+const enemy = () => {
+  generateEnemy();
+  updateChoices(`<button onclick="engageEnemy()" id="choice1">Engage enemy</button>
+              <button onclick="fleeEnemy()" id="choice2">Attempt to flee</button>`);
 };
 
-// Swap from choice panel to controls
-toControls = () => {
-  controls.style.display = "grid";
-  decisionPanel.style.display = "none";
+// ============ Event Decider ============
+const dungeonEvent = () => {
+  let eventTypes = [
+    "treasure",
+    "fountain",
+    "enemy",
+    "enemy",
+    "nothing",
+    "nothing",
+  ];
+
+  const event = eventTypes[randomizeNum(eventTypes.length)];
+  switch (event) {
+    case "treasure":
+      treasureChest();
+      break;
+    case "fountain":
+      fountain();
+      break;
+    case "enemy":
+      enemy();
+      break;
+  }
+};
+
+// ============ Next Room ============
+const nextRoom = () => {
+  if (room == 0) {
+    incrementRoom();
+    document.getElementById("left").style.display = "block";
+    document.getElementById("right").style.display = "block";
+    updateImage("./assets/images/dungeon-hallway.jpg");
+    updatePrompt(
+      "You step into a damp stone chamber. The air is thick, and the walls echo with distant dripping water. There are three narrow passageways: one to the left, one straight ahead, and one to the right. Which way do you go?"
+    );
+  } else if (room > 0 && room < 15) {
+    incrementRoom();
+    dungeonEvent();
+  } else {
+    finishRun();
+  }
 };
