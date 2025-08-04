@@ -45,6 +45,8 @@ const controls = document.querySelector(".controls");
 const potionAmount = document.querySelector("#potion-amount");
 const bootsImage = document.querySelector("#boots");
 
+const totalRooms = 20;
+
 // ============ Utility ============
 
 // Generate a random number
@@ -110,6 +112,8 @@ const ignoreEvent = () => {
 const finishRun = () => {
   updateImage("./assets/images/exit.jpeg");
   updatePrompt(`Congratulations, ${userName}. You found the exit!`);
+  controls.style.display = "none";
+  roomCount.textContent = "Exit";
 };
 
 // Treasure chest contents
@@ -129,7 +133,8 @@ const bootsUpgrade = () => {
     bootsImage.src = "./assets/images/pegasian-boots.webp";
     updatePrompt("You find a brand new pair of pegasian boots.");
   } else {
-    nothing();
+    updatePrompt("The chest was empty.");
+    toControls();
   }
 };
 
@@ -142,15 +147,17 @@ const addSkipRoomPotion = () => {
 
 // Use potion
 const useSkipRoomPotion = () => {
-  if (skipRoomPotion > 0) {
-    skipRoomPotion--;
-    potionAmount.textContent = `${skipRoomPotion}`;
-    incrementRoom();
-    toControls();
-    updatePrompt(
-      "You drink the glowing potion. A strange warmth spreads through your body, and in an instant, the room blurs and fades. When your vision clears, you've skipped ahead one room deeper into the dungeon."
-    );
-    updateImage("./assets/images/dungeon-hallway.jpg");
+  if (totalRooms != totalRooms) {
+    if (skipRoomPotion > 0) {
+      skipRoomPotion--;
+      potionAmount.textContent = `${skipRoomPotion}`;
+      incrementRoom();
+      toControls();
+      updatePrompt(
+        "You drink the glowing potion. A strange warmth spreads through your body, and in an instant, the room blurs and fades. When your vision clears, you've skipped ahead one room deeper into the dungeon."
+      );
+      updateImage("./assets/images/dungeon-hallway.jpg");
+    }
   }
 };
 
@@ -273,16 +280,14 @@ const enemy = () => {
               <button onclick="fleeEnemy()" id="choice2">Attempt to flee</button>`);
 };
 
+const nothing = () => {
+  updateImage("./assets/images/dungeon-hallway.jpg");
+  updatePrompt("You move through the room without trouble.");
+};
+
 // ============ Event Decider ============
 const dungeonEvent = () => {
-  let eventTypes = [
-    "treasure",
-    "fountain",
-    "enemy",
-    "enemy",
-    "nothing",
-    "nothing",
-  ];
+  let eventTypes = ["treasure", "fountain", "enemy", "enemy", "nothing"];
 
   const event = eventTypes[randomizeNum(eventTypes.length)];
   switch (event) {
@@ -295,6 +300,8 @@ const dungeonEvent = () => {
     case "enemy":
       enemy();
       break;
+    case "nothing":
+      nothing();
   }
 };
 
@@ -308,7 +315,7 @@ const nextRoom = () => {
     updatePrompt(
       "You step into a damp stone chamber. The air is thick, and the walls echo with distant dripping water. There are three narrow passageways: one to the left, one straight ahead, and one to the right. Which way do you go?"
     );
-  } else if (room > 0 && room < 15) {
+  } else if (room > 0 && room < totalRooms) {
     incrementRoom();
     dungeonEvent();
   } else {
