@@ -54,19 +54,6 @@ const randomizeNum = (num) => {
   return Math.floor(Math.random() * num);
 };
 
-// Change health
-const changeHealth = (operator, healthValue) => {
-  switch (operator) {
-    case "+":
-      health += healthValue;
-      return (healthDisplay.textContent = `Health: ${health.toString()}`);
-    case "-":
-      health -= healthValue;
-
-      return (healthDisplay.textContent = `Health: ${health.toString()}`);
-  }
-};
-
 // Increase room
 const incrementRoom = () => {
   room++;
@@ -114,6 +101,27 @@ const finishRun = () => {
   updatePrompt(`Congratulations, ${userName}. You found the exit!`);
   controls.style.display = "none";
   roomCount.textContent = "Exit";
+};
+
+// Change health
+const changeHealth = (operator, healthValue) => {
+  switch (operator) {
+    case "+":
+      health += healthValue;
+      return (healthDisplay.textContent = `Health: ${health.toString()}`);
+    case "-":
+      health -= healthValue;
+      if (health > 0) {
+        return (healthDisplay.textContent = `Health: ${health.toString()}`);
+      } else {
+        healthDisplay.textContent = `Health: ${health.toString()}`;
+        updatePrompt("You died.");
+        updateImage("./assets/images/death.png");
+        controls.style.display = "none";
+        decisionPanel.style.display = "none";
+        throw new Error();
+      }
+  }
 };
 
 // Treasure chest contents
