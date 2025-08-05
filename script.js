@@ -155,17 +155,15 @@ const addSkipRoomPotion = () => {
 
 // Use potion
 const useSkipRoomPotion = () => {
-  if (totalRooms != totalRooms) {
-    if (skipRoomPotion > 0) {
-      skipRoomPotion--;
-      potionAmount.textContent = `${skipRoomPotion}`;
-      incrementRoom();
-      toControls();
-      updatePrompt(
-        "You drink the glowing potion. A strange warmth spreads through your body, and in an instant, the room blurs and fades. When your vision clears, you've skipped ahead one room deeper into the dungeon."
-      );
-      updateImage("./assets/images/dungeon-hallway.jpg");
-    }
+  if (room < totalRooms && skipRoomPotion > 0) {
+    skipRoomPotion--;
+    potionAmount.textContent = `${skipRoomPotion}`;
+    incrementRoom();
+    toControls();
+    updatePrompt(
+      "You drink the glowing potion. A strange warmth spreads through your body, and in an instant, the room blurs and fades. When your vision clears, you've skipped ahead one room deeper into the dungeon."
+    );
+    updateImage("./assets/images/dungeon-hallway.jpg");
   }
 };
 
@@ -225,7 +223,7 @@ const fountainDrink = () => {
   eventRoll = randomizeNum(5);
   if (eventRoll > 1) {
     changeHealth("+", 10);
-    updatePrompt("You feel refereshed. Restored 10 health");
+    updatePrompt("You feel refreshed. Restored 10 health");
     toControls();
     updateImage("./assets/images/dungeon-hallway.jpg");
   } else {
