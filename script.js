@@ -1,33 +1,3 @@
-/* 
----Dungeon Crawler---
-
-"Health" start at "50"
-Start at "Character Creation"
-Change to "Dungeon" when button is clicked and name has input
-Start in room one, Default background-image
-Choose between left, right or forward room
-Randomize event upon entering room, change background-image depending on triggered event
-
-Events:
-Nothing
-Treasure Chest - Skip a Room Potion - Higher flee chance - Nothing - Mimic(Take damage)
-Fountain, heals an amount of "Health"
-Enemy, option to attempt to flee or fight, lose "Health", chance to avoid losing "Health" if flee is effective
-
-Find "Exit" to win
-
-*/
-
-// const controls = document.querySelector("controls");
-
-// function showControls() {
-//   document.querySelector(".controls").style.display = "grid";
-// }
-
-// function hideControls() {
-//   document.querySelector(".controls").style.display = "none";
-// }
-
 let userName = "";
 let room = 0;
 let health = 50;
@@ -111,7 +81,7 @@ const changeHealth = (operator, healthValue) => {
       return (healthDisplay.textContent = `Health: ${health.toString()}`);
     case "-":
       health -= healthValue;
-      if (health > 0) {
+      if (health >= 0) {
         return (healthDisplay.textContent = `Health: ${health.toString()}`);
       } else {
         healthDisplay.textContent = `Health: ${health.toString()}`;
@@ -256,9 +226,9 @@ const fleeEnemy = () => {
     updatePrompt("You slip away unnoticed.");
   } else {
     updatePrompt(
-      "You try to flee, but fail. You fall back one room instead. -5 Health"
+      "You try to flee, but fail. You fall back one room instead. -20 Health"
     );
-    changeHealth("-", 5);
+    changeHealth("-", 20);
     decrementRoom();
   }
   updateImage("./assets/images/dungeon-hallway.jpg");
